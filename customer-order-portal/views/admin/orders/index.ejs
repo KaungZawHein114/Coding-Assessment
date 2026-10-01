@@ -1,0 +1,46 @@
+<%# Order list with status tabs, customer filter and pagination. %>
+<div class="page-head">
+  <h1>Orders<% if (filterCustomer) { %> <span class="muted">for <%= filterCustomer.name %></span><% } %></h1>
+  <a class="btn btn-primary" href="/admin/orders/new<%= filterCustomer ? '?customer_id=' + filterCustomer.id : '' %>">+ New Order</a>
+</div>
+
+<%- include('../../partials/status-tabs', { base: base, counts: counts, status: status, customerId: customerId }) %>
+
+<form method="get" action="/admin/orders" class="search-form">
+  <% if (status) { %><input type="hidden" name="status" value="<%= status %>"><% } %>
+  <label for="customerId" class="sr-only">Customer</label>
+  <select id="customerId" name="customerId">
+    <option value="">All customers</option>
+    <% customers.forEach(function (c) { %>
+      <option value="<%= c.id %>" <%= customerId === c.id ? 'selected' : '' %>><%= c.name %></option>
+    <% }) %>
+  </select>
+  <button type="submit" class="btn">Filter</button>
+  <% if (customerId) { %><a class="btn btn-link" href="<%= base %><%= status ? '?status=' + status : '' %>">Clear</a><% } %>
+</form>
+
+<% if (orders.length === 0) { %>
+  <p class="empty"><%= status || customerId ? 'No orders match this filter.' : 'No orders yet.' %> <a href="/admin/orders/new">Create the first one.</a></p>
+<% } else { %>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Order</th><th>Customer</th><th>Item</th><th class="num">Qty</th><th class="num">Total</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+    <tbody>
+    <% orders.forEach(function (o) { %>
+      <tr>
+        <td><a href="/admin/orders/<%= o.id %>"><%= o.order_number %></a></td>
+        <td><a href="/admin/customers/<%= o.customer_id %>"><%= o.customer_name %></a></td>
+        <td><%= o.item_name %></td>
+        <td class="num"><%= o.quantity %></td>
+        <td class="num"><%= formatMoney(o.total_cents) %></td>
+        <td><%- include('../../partials/status-badge', { status: o.status }) %></td>
+        <td><%= formatDate(o.created_at) %></td>
+        <td class="row-actions">
+          <a class="btn btn-sm" href="/admin/orders/<%= o.id %>">View</a>
+          <% if (!orderStatus.isFinal(o.status)) { %><a class="btn btn-sm" href="/admin/orders/<%= o.id %>/edit">Edit</a><% } %>
+        </td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table></div>
+  <%- include('../../partials/pagination', { pager: pager, baseUrl: base, query: { status: status, customerId: customerId } }) %>
+<% } %>

@@ -1,0 +1,37 @@
+<%# Form fields shared by the "new order" and "edit order" pages. %>
+<%# Expects: values, errors. Optional: customers (renders customer select when non-empty) %>
+<% if (typeof customers !== 'undefined' && customers.length) { %>
+<div class="field <%= errors.customer_id ? 'has-error' : '' %>">
+  <label for="customer_id">Customer</label>
+  <select id="customer_id" name="customer_id" required>
+    <option value="">Select a customer…</option>
+    <% customers.forEach(function (c) { %>
+      <option value="<%= c.id %>" <%= String(values.customer_id) === String(c.id) ? 'selected' : '' %>><%= c.name %> (<%= c.email %>)</option>
+    <% }) %>
+  </select>
+  <% if (errors.customer_id) { %><span class="field-error"><%= errors.customer_id %></span><% } %>
+</div>
+<% } %>
+<div class="field <%= errors.item_name ? 'has-error' : '' %>">
+  <label for="item_name">Item name</label>
+  <input type="text" id="item_name" name="item_name" value="<%= values.item_name || '' %>" maxlength="150" required>
+  <% if (errors.item_name) { %><span class="field-error"><%= errors.item_name %></span><% } %>
+</div>
+<div class="field-row">
+  <div class="field <%= errors.quantity ? 'has-error' : '' %>">
+    <label for="quantity">Quantity</label>
+    <input type="number" id="quantity" name="quantity" value="<%= values.quantity || '' %>" min="1" max="10000" step="1" required>
+    <% if (errors.quantity) { %><span class="field-error"><%= errors.quantity %></span><% } %>
+  </div>
+  <div class="field <%= errors.unit_price ? 'has-error' : '' %>">
+    <label for="unit_price">Unit price ($)</label>
+    <input type="text" inputmode="decimal" id="unit_price" name="unit_price" value="<%= values.unit_price || '' %>" placeholder="0.00" required>
+    <% if (errors.unit_price) { %><span class="field-error"><%= errors.unit_price %></span><% } %>
+  </div>
+</div>
+<p class="muted">The order total is calculated by the server (quantity × unit price).</p>
+<div class="field <%= errors.notes ? 'has-error' : '' %>">
+  <label for="notes">Notes <span class="muted">(optional)</span></label>
+  <textarea id="notes" name="notes" rows="3" maxlength="1000"><%= values.notes || '' %></textarea>
+  <% if (errors.notes) { %><span class="field-error"><%= errors.notes %></span><% } %>
+</div>

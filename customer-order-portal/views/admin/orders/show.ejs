@@ -1,0 +1,29 @@
+<%# One order. The dropdown only offers the allowed next statuses. %>
+<% const next = orderStatus.nextStatuses(order.status); %>
+<div class="page-head">
+  <h1>Order <%= order.order_number %></h1>
+  <% if (!orderStatus.isFinal(order.status)) { %>
+    <a class="btn" href="/admin/orders/<%= order.id %>/edit">Edit details</a>
+  <% } %>
+</div>
+
+<section class="card">
+  <%- include('../../partials/order-details', { order: order }) %>
+</section>
+
+<section class="card">
+  <h2>Status</h2>
+  <% if (next.length === 0) { %>
+    <p class="muted">This order is <strong><%= order.status %></strong>. It is final and can no longer be changed or edited.</p>
+  <% } else { %>
+    <form method="post" action="/admin/orders/<%= order.id %>/status" class="inline-form status-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="status">Move from <strong><%= order.status %></strong> to</label>
+      <select id="status" name="status" required>
+        <% next.forEach(function (s) { %><option value="<%= s %>"><%= s %></option><% }) %>
+      </select>
+      <button type="submit" class="btn btn-primary">Update status</button>
+    </form>
+  <% } %>
+</section>
+<p><a href="/admin/orders">&laquo; Back to orders</a></p>

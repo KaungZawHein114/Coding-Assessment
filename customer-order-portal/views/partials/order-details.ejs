@@ -1,0 +1,18 @@
+<%# Table of details for one order. %>
+<%# Expects: order %>
+<dl class="details">
+  <dt>Order number</dt><dd><%= order.order_number %></dd>
+  <dt>Status</dt><dd><%- include('status-badge', { status: order.status }) %></dd>
+  <dt>Customer</dt>
+  <dd>
+    <a href="/admin/customers/<%= order.customer_id %>"><%= order.customer_name %></a>
+    <span class="muted">(<%= order.customer_email %>)</span>
+  </dd>
+  <dt>Item</dt><dd><%= order.item_name %></dd>
+  <dt>Quantity</dt><dd><%= order.quantity %></dd>
+  <dt>Unit price</dt><dd><%= formatMoney(order.unit_price_cents) %></dd>
+  <dt>Total</dt><dd><strong><%= formatMoney(order.total_cents) %></strong></dd>
+  <dt>Notes</dt><dd class="pre-line"><%= order.notes || '—' %></dd>
+  <dt>Created</dt><dd><%= formatDate(order.created_at) %></dd>
+  <dt>Updated</dt><dd><%= formatDate(order.updated_at) %></dd>
+</dl>

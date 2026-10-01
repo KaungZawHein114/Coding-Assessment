@@ -1,0 +1,6 @@
+<%# Red box above a form when some fields have errors. %>
+<% if (errors && Object.keys(errors).length) { %>
+  <div class="flash flash-error" role="alert">
+    <span>Please fix the <%= Object.keys(errors).length %> highlighted field<%= Object.keys(errors).length === 1 ? '' : 's' %> below.</span>
+  </div>
+<% } %>

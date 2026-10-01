@@ -1,0 +1,13 @@
+<div class="page-head"><h1>Edit <%= order.order_number %></h1></div>
+<section class="card">
+  <p class="muted">Customer: <strong><%= order.customer_name %></strong> · Status: <%- include('../../partials/status-badge', { status: order.status }) %> (change status on the order page)</p>
+  <%- include('../../partials/form-errors') %>
+  <form method="post" action="/admin/orders/<%= order.id %>" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../../partials/order-fields') %>
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <a class="btn" href="/admin/orders/<%= order.id %>">Cancel</a>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,16 @@
+<%# Menu links. The current page link is highlighted with the "active" class. %>
+<% const p = currentPath || ''; %>
+<nav class="nav" aria-label="Main">
+  <% if (currentUser) { %>
+    <a href="/admin" class="<%= p === '/admin' ? 'active' : '' %>">Dashboard</a>
+    <a href="/admin/customers" class="<%= p.startsWith('/admin/customers') ? 'active' : '' %>">Customers</a>
+    <a href="/admin/orders" class="<%= p.startsWith('/admin/orders') ? 'active' : '' %>">Orders</a>
+    <span class="nav-user" title="Signed in as"><%= currentUser.email %> <span class="role-tag"><%= currentUser.role %></span></span>
+    <form method="post" action="/logout" class="inline-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-link">Logout</button>
+    </form>
+  <% } else { %>
+    <a href="/login" class="active">Log in</a>
+  <% } %>
+</nav>

@@ -1,0 +1,16 @@
+<div class="page-head"><h1>New Order</h1></div>
+<section class="card">
+  <% if (customers.length === 0) { %>
+    <p class="empty">You need a customer first. <a href="/admin/customers/new">Create a customer.</a></p>
+  <% } else { %>
+    <%- include('../../partials/form-errors') %>
+    <form method="post" action="/admin/orders" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <%- include('../../partials/order-fields') %>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Create order</button>
+        <a class="btn" href="/admin/orders">Cancel</a>
+      </div>
+    </form>
+  <% } %>
+</section>

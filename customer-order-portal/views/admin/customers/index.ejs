@@ -1,0 +1,49 @@
+<%# Customer list with search, pagination and Delete buttons. %>
+<div class="page-head">
+  <h1>Customers</h1>
+  <a class="btn btn-primary" href="/admin/customers/new">+ New Customer</a>
+</div>
+
+<form method="get" action="/admin/customers" class="search-form" role="search">
+  <input type="search" name="q" value="<%= q %>" placeholder="Search by name or email" aria-label="Search customers" maxlength="100">
+  <button type="submit" class="btn">Search</button>
+  <% if (q) { %><a class="btn btn-link" href="/admin/customers">Clear</a><% } %>
+</form>
+
+<% if (customers.length === 0) { %>
+  <% if (q) { %>
+    <p class="empty">No customers match "<%= q %>".</p>
+  <% } else { %>
+    <p class="empty">No customers yet. <a href="/admin/customers/new">Create the first one.</a></p>
+  <% } %>
+<% } else { %>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th class="num">Orders</th><th>Created</th><th>Actions</th></tr></thead>
+    <tbody>
+    <% customers.forEach(function (c) { %>
+      <tr>
+        <td><a href="/admin/customers/<%= c.id %>"><%= c.name %></a></td>
+        <td><%= c.email %></td>
+        <td><%= c.phone %></td>
+        <td class="num"><%= c.order_count %></td>
+        <td><%= formatDate(c.created_at) %></td>
+        <td class="row-actions">
+          <a class="btn btn-sm" href="/admin/customers/<%= c.id %>">View</a>
+          <a class="btn btn-sm" href="/admin/customers/<%= c.id %>/edit">Edit</a>
+          <% if (c.order_count > 0) { %>
+            <span class="tooltip-wrap" title="Cannot delete: this customer has <%= c.order_count %> order<%= c.order_count === 1 ? '' : 's' %>">
+              <button type="button" class="btn btn-sm btn-danger" disabled>Delete</button>
+            </span>
+          <% } else { %>
+            <form method="post" action="/admin/customers/<%= c.id %>/delete" class="inline-form" data-confirm="Delete customer &quot;<%= c.name %>&quot;? This cannot be undone.">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          <% } %>
+        </td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table></div>
+  <%- include('../../partials/pagination', { pager: pager, baseUrl: '/admin/customers', query: { q: q } }) %>
+<% } %>

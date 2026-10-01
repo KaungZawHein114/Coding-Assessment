@@ -1,0 +1,34 @@
+<%# Admin home: totals and the 5 newest orders. %>
+<div class="page-head"><h1>Dashboard</h1></div>
+
+<div class="stat-grid">
+  <a class="stat" href="/admin/customers"><span class="stat-num"><%= stats.totalCustomers %></span><span class="stat-label">Customers</span></a>
+  <a class="stat" href="/admin/orders"><span class="stat-num"><%= stats.totalOrders %></span><span class="stat-label">Total orders</span></a>
+  <% orderStatus.STATUSES.forEach(function (s) { %>
+    <a class="stat stat-<%= s.toLowerCase() %>" href="/admin/orders?status=<%= s %>"><span class="stat-num"><%= stats.counts[s] %></span><span class="stat-label"><%= s %></span></a>
+  <% }) %>
+</div>
+
+<div class="page-head">
+  <h2>Recent orders</h2>
+  <a class="btn btn-primary" href="/admin/orders/new">+ New Order</a>
+</div>
+<% if (stats.recent.length === 0) { %>
+  <p class="empty">No orders yet. <a href="/admin/orders/new">Create the first one.</a></p>
+<% } else { %>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Order</th><th>Customer</th><th>Item</th><th class="num">Total</th><th>Status</th><th>Created</th></tr></thead>
+    <tbody>
+    <% stats.recent.forEach(function (o) { %>
+      <tr>
+        <td><a href="/admin/orders/<%= o.id %>"><%= o.order_number %></a></td>
+        <td><%= o.customer_name %></td>
+        <td><%= o.item_name %></td>
+        <td class="num"><%= formatMoney(o.total_cents) %></td>
+        <td><%- include('../partials/status-badge', { status: o.status }) %></td>
+        <td><%= formatDate(o.created_at) %></td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table></div>
+<% } %>

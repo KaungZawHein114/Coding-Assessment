@@ -1,0 +1,19 @@
+<%# Filter buttons: All, Pending, Processing, Completed, Cancelled (with counts). %>
+<%
+  // Expects: base, counts, status (active or null), customerId (optional)
+  const tabs = ['All'].concat(orderStatus.STATUSES);
+  const tabHref = (t) => {
+    const params = new URLSearchParams();
+    if (t !== 'All') params.set('status', t);
+    if (customerId) params.set('customerId', customerId);
+    const qs = params.toString();
+    return base + (qs ? '?' + qs : '');
+  };
+%>
+<nav class="tabs" aria-label="Filter by status">
+  <% tabs.forEach(function (t) { %>
+    <a href="<%= tabHref(t) %>" class="tab <%= (t === 'All' ? !status : status === t) ? 'active' : '' %>">
+      <%= t %> <span class="count"><%= counts[t] %></span>
+    </a>
+  <% }) %>
+</nav>

@@ -1,0 +1,12 @@
+<div class="page-head"><h1>New Customer</h1></div>
+<section class="card">
+  <%- include('../../partials/form-errors') %>
+  <form method="post" action="/admin/customers" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../../partials/customer-fields') %>
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Create customer</button>
+      <a class="btn" href="/admin/customers">Cancel</a>
+    </div>
+  </form>
+</section>

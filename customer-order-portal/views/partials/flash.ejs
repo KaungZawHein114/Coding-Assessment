@@ -1,0 +1,7 @@
+<%# Success/error messages shown once after an action. The x button removes them. %>
+<% (flash || []).forEach(function (f) { %>
+  <div class="flash flash-<%= f.type %>" role="alert">
+    <span><%= f.message %></span>
+    <button type="button" class="flash-close" data-dismiss aria-label="Dismiss">&times;</button>
+  </div>
+<% }) %>

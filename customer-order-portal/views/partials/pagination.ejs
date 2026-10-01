@@ -1,0 +1,25 @@
+<%# Previous / page numbers / Next links. Keeps the search and filter in each link. %>
+<%
+  // Expects: pager, baseUrl, query (extra params to keep, e.g. { q, status })
+  const keep = Object.assign({}, query || {});
+  const href = (n) => {
+    const params = new URLSearchParams();
+    Object.keys(keep).forEach((k) => { if (keep[k] !== null && keep[k] !== undefined && keep[k] !== '') params.set(k, keep[k]); });
+    params.set('page', n);
+    return baseUrl + '?' + params.toString();
+  };
+  const from = pager.total === 0 ? 0 : pager.offset + 1;
+  const to = Math.min(pager.offset + pager.pageSize, pager.total);
+%>
+<div class="pagination-bar">
+  <p class="muted">Showing <%= from %>–<%= to %> of <%= pager.total %></p>
+  <% if (pager.totalPages > 1) { %>
+    <nav class="pagination" aria-label="Pagination">
+      <% if (pager.hasPrev) { %><a href="<%= href(pager.page - 1) %>" rel="prev">&laquo; Previous</a><% } else { %><span class="disabled">&laquo; Previous</span><% } %>
+      <% for (let i = 1; i <= pager.totalPages; i++) { %>
+        <% if (i === pager.page) { %><span class="current" aria-current="page"><%= i %></span><% } else { %><a href="<%= href(i) %>"><%= i %></a><% } %>
+      <% } %>
+      <% if (pager.hasNext) { %><a href="<%= href(pager.page + 1) %>" rel="next">Next &raquo;</a><% } else { %><span class="disabled">Next &raquo;</span><% } %>
+    </nav>
+  <% } %>
+</div>
